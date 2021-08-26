@@ -55,25 +55,31 @@ class _SavedState extends State<Saved> {
                 itemCount: snapshot.data?.length,
                 itemBuilder: (BuildContext context, int index) {
                   final items = snapshot.data![index];
-
-                  return _buildRow(items);
+                  for (var list_item in item) {
+                    if (list_item.fk_id_group == items.id) {
+                      return _buildRow(list_item);
+                    } else {
+                      return Center(child: Text('Lista vazia... 1'));
+                    }
+                  }
+                  return Center(child: Text('Lista vazia...2'));
                 });
           } else {
-            return Center(child: Text('Lista vazia...'));
+            return Center(child: Text('Lista vazia...3'));
           }
         });
   }
 
-  Widget _buildRow(items) {
+  Widget _buildRow(list_item) {
     return Card(
       child: Column(
         children: [
           ListTile(
-            title: Text(items.fk_description),
+            title: Text(list_item.fk_description),
             // subtitle: Text(items.create_at),
-            subtitle:
-                Text((items.fk_checked == 1) ? 'concluido' : 'não concluido'),
-            selected: (items.fk_checked == 1) ? true : false,
+            subtitle: Text(
+                (list_item.fk_checked == 1) ? 'concluido' : 'não concluido'),
+            selected: (list_item.fk_checked == 1) ? true : false,
           ),
         ],
       ),

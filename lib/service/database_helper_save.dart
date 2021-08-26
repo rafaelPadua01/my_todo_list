@@ -69,4 +69,26 @@ class DatabaseHandlerSave {
       );
     });
   }
+
+  //Lista saves apartir dos respectivos fk_id_groups
+  //para que sejam exibidos corretamente na lista dos grupos
+  /*
+  Future<List<Save>> savesGroups() async {
+    final db = await initializeDb();
+
+    final List<Map<String, dynamic>> maps =
+        await db.rawQuery('select * from saves where fk_id_group = id');
+    return List.generate(maps.length, (i) {
+      return Save(
+        id: maps[i]['id'],
+        fk_id_todo: maps[i]['fk_id_todo'],
+        fk_id_group: maps[i]['fk_id_group'],
+        fk_description: maps[i]['fk_description'],
+        fk_checked: maps[i]['fk_checked'],
+        fk_date: maps[i]['fk_date'],
+        fk_time: maps[i]['fk_time'],
+        create_at: maps[i]['create_at'], 
+      );
+    });
+  }*/
 }

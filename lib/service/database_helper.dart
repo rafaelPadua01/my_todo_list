@@ -28,7 +28,6 @@ class DatabaseHandler {
           'fk_checked INTEGER NOT NULL, fk_date TEXT NOT NULL, fk_time TEXT NOT NULL , '
           'create_at TEXT NOT NULL, update_at TEXT,'
           'FOREIGN KEY (fk_id_todo) references todos(id) , '
-          'FOREIGN KEY(fk_id_todo) references todos(id),'
           'FOREIGN KEY (fk_id_group) references todos(fk_id_group),'
           'FOREIGN KEY (fk_description) references todos(description) ,'
           'FOREIGN KEY (fk_checked) references todos(checked) ,'
