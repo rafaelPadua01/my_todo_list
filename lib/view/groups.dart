@@ -44,36 +44,52 @@ class _GridGroupsState extends State<GridGroups> {
     // return getAllTodos(items);
   }
 
-  //MEtodo que recebe os todos
-  /*
-  Future getAllTodos(items) async {
-    final db = await this.handler_save.initializeDb();
-    final List<Map<String, dynamic>> maps = await db.query('saves');
-    final item = List.generate(maps.length, (i) {
-      return Save(
-        id: maps[i]['id'],
-        fk_id_todo: maps[i]['fk_id_todo'],
-        fk_id_group: maps[i]['fk_id_group'],
-        fk_description: maps[i]['fk_description'],
-        fk_checked: maps[i]['fk_checked'],
-        fk_date: maps[i]['fk_date'],
-        fk_time: maps[i]['fk_time'],
-        create_at: maps[i]['create_at'],
-      );
-    });
-
-    for (var group in items) {
-      for (var list in item) {
-        if (list.fk_id_group == group.id) {
-          var value = list;
-          return _buildList(value);
-        } else {
-          return Center(child: Text('lista Vazia....'));
-        }
-      }
-    }
+  //Metodo que cria um alert de confirmação para remover os grupos
+  Future<void> _showDialogDelete(value) async {
+    return showDialog<void>(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("${value.name} Remove ?"),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: [
+                  Text('Do you really accept remove this group ?'),
+                  Text(
+                      'on click in "Approve" button this group going to be removed permaterly'),
+                  Text('To cancel click "Close" button'),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              //Cancel Button
+              TextButton(
+                child: const Text('Close'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              //Approve Button
+              TextButton(
+                child: const Text('Approve'),
+                onPressed: () {
+                  // final id = item.id;
+                  _delete(value.id);
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        });
   }
-*/
+
+  Future<int> _delete(int id) async {
+    final db = await this.handler_groups.initializeDb();
+
+    return await this.handler_groups.deleteGroup(id);
+  }
+
   @override
   //Build que carrega a interface
   Widget build(BuildContext context) {
@@ -93,33 +109,75 @@ class _GridGroupsState extends State<GridGroups> {
                   children: item.map(
                     (value) {
                       return InkWell(
-                        onTap: () {
-                          Navigator.push(context, MaterialPageRoute<void>(
-                              builder: (BuildContext context) {
-                            return Scaffold(
-                              appBar: AppBar(
-                                title: Text(value.name + ' Grupos de listas'),
-                              ),
-                              body: Column(
-                                children: [
-                                  Expanded(child: _buildList(value)),
-                                ],
-                              ),
-                            );
-                          }));
-                        },
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.deepPurpleAccent,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          padding: const EdgeInsets.all(8),
-                          //color: Colors.deepPurpleAccent,
-                          //alignment: Alignment.center,
-                          margin: EdgeInsets.all(8),
-                          child: Text('name: ${value.name}'),
-                        ),
-                      );
+                          onLongPress: () {
+                            Scaffold.of(context)
+                                .showBottomSheet<void>((BuildContext context) {
+                              return Container(
+                                height: 200,
+                                alignment: Alignment.center,
+                                //color: Colors.deepPurpleAccent,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: <Widget>[
+                                    //const Text('Ações...'),
+                                    //Botão rename
+                                    TextButton.icon(
+                                        icon: const Icon(Icons
+                                            .drive_file_rename_outline_sharp),
+                                        label: const Text('Rename'),
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        }),
+                                    //Botão delete
+                                    TextButton.icon(
+                                        icon: const Icon(Icons.delete_forever),
+                                        label: const Text('Delete'),
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                          _showDialogDelete(value);
+                                        }),
+                                    /* ElevatedButton(
+                                        child: const Text('Close Bottom Sheet'),
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        }),*/
+                                  ],
+                                ),
+                              );
+                            });
+                            //  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            //      content: Text('Janela de opções dos cards')));
+                          },
+                          onTap: () {
+                            Navigator.push(context, MaterialPageRoute<void>(
+                                builder: (BuildContext context) {
+                              return Scaffold(
+                                appBar: AppBar(
+                                  title: Text(value.name + ' Grupos de listas'),
+                                ),
+                                body: Column(
+                                  children: [
+                                    Expanded(child: _buildList(value)),
+                                  ],
+                                ),
+                              );
+                            }));
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.deepPurpleAccent,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            padding: const EdgeInsets.all(2),
+                            //color: Colors.blueGrey.shade900,
+                            //alignment: Alignment.center,
+                            margin: EdgeInsets.all(8),
+                            child: Text(
+                              'name: ${value.name}',
+                              style: TextStyle(color: Colors.grey[50]),
+                            ),
+                          ));
                     },
                   ).toList());
             } else {
@@ -136,8 +194,7 @@ class _GridGroupsState extends State<GridGroups> {
         builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
           final item = snapshot.data!;
           var items;
-          //print(value);
-          // if (snapshot.hasData) {
+
           return ListView.builder(
               itemCount: snapshot.data?.length,
               itemBuilder: (BuildContext context, int index) {
@@ -148,14 +205,6 @@ class _GridGroupsState extends State<GridGroups> {
                   return const SizedBox();
                 }
               });
-
-          //print(items);
-          //return _buildRowList(items);
-          //} else {
-          //return Center(child: Text('Lista Vazia...'));
-          //}
-
-          // return value;
         });
   }
 
@@ -164,6 +213,9 @@ class _GridGroupsState extends State<GridGroups> {
     return Card(
       child: Column(
         children: [
+          //Cria header para listas de grupos
+          // se data == data atual, exibir como 'hoje'
+          //se não exibe a data em que foi criado
           ListTile(
             title: Text(items.fk_description),
             subtitle:

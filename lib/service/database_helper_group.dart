@@ -55,4 +55,15 @@ class DatabaseHandlerGroups {
       );
     });
   }
+
+  //Metodo que remove os grupos
+  Future<int> deleteGroup(int? id) async {
+    final db = await initializeDb();
+
+    return await db.delete(
+      'groups',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
 }
