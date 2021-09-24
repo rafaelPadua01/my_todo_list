@@ -55,6 +55,16 @@ class DatabaseHandlerGroups {
       );
     });
   }
+  //Metodo que atualiza os dados no banco
+
+  Future<void> updateGroup(value) async {
+    final db = await initializeDb();
+
+    int count = await db.rawUpdate(
+      "UPDATE groups SET name = ?, update_at = ?, create_at = ?,  WHERE id = ?",
+      [value.name, value.update_at, value.create_at, value.id],
+    );
+  }
 
   //Metodo que remove os grupos
   Future<int> deleteGroup(int? id) async {

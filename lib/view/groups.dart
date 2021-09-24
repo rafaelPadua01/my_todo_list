@@ -15,6 +15,9 @@ class _GridGroupsState extends State<GridGroups> {
   late DatabaseHandlerSave handler_save;
   late DatabaseHandlerGroups handler_groups;
 
+  final formKey = GlobalKey<FormState>();
+  final group_name_controller = TextEditingController();
+
   @override
   //estado inicial do app
   void initState() {
@@ -42,6 +45,47 @@ class _GridGroupsState extends State<GridGroups> {
     });
 
     // return getAllTodos(items);
+  }
+
+  //Metodo que cria o alert com o form para edição do nome do grupo
+  Future<void> _showDialogUpdate(value) async {
+    return showDialog<void>(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("${value.name} Editar ?"),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: [
+                  TextFormField(
+                      //title: const Text('insira um novo nome para este grupo'),
+                      controller: group_name_controller,
+                      decoration: InputDecoration(hintText: "${value.name}")),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              TextButton.icon(
+                  icon: Icon(Icons.close_sharp),
+                  label: const Text('Close'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  }),
+              TextButton.icon(
+                  icon: const Icon(Icons.save_alt_sharp),
+                  label: const Text('Save'),
+                  onPressed: () {
+                    //Navigator.of(context).pop();
+                    Navigator.pop(context, 'Ok');
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text("Editando, aguarde...")));
+
+                    updateGroup(value);
+                  })
+            ],
+          );
+        });
   }
 
   //Metodo que cria um alert de confirmação para remover os grupos
@@ -82,6 +126,14 @@ class _GridGroupsState extends State<GridGroups> {
             ],
           );
         });
+  }
+
+  Future<void> _updateGroup(Groups group) async {
+    final db = await this.handler_groups.initializeDb();
+    //está variavel guardara o resultado da alteração
+    var result = await db.update('groups', group.toMap(),
+        where: "id = ?", whereArgs: [group.id]);
+    return;
   }
 
   Future<int> _delete(int id) async {
@@ -128,6 +180,7 @@ class _GridGroupsState extends State<GridGroups> {
                                         label: const Text('Rename'),
                                         onPressed: () {
                                           Navigator.pop(context);
+                                          _showDialogUpdate(value);
                                         }),
                                     //Botão delete
                                     TextButton.icon(
@@ -137,11 +190,12 @@ class _GridGroupsState extends State<GridGroups> {
                                           Navigator.pop(context);
                                           _showDialogDelete(value);
                                         }),
-                                    /* ElevatedButton(
-                                        child: const Text('Close Bottom Sheet'),
+                                    TextButton.icon(
+                                        icon: const Icon(Icons.close_sharp),
+                                        label: const Text('Close Bottom Sheet'),
                                         onPressed: () {
                                           Navigator.pop(context);
-                                        }),*/
+                                        }),
                                   ],
                                 ),
                               );
@@ -225,5 +279,23 @@ class _GridGroupsState extends State<GridGroups> {
         ],
       ),
     );
+  }
+
+  //Metodo update que recebe os novos dados
+  // armazena nos campos corretos e manda para o back-end
+  void updateGroup(value) {
+    setState(() {
+      if (value != null || value.id >= 0) {
+        value = Groups(
+          id: value.id,
+          name: group_name_controller.text,
+          create_at: value.create_at,
+          update_at: DateTime.now().toString(),
+        );
+        _updateGroup(value);
+      } else {
+        print('erro');
+      }
+    });
   }
 }
