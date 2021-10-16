@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:timezone/timezone.dart' as tz;
+import 'package:timezone/data/latest.dart' as tz;
+import 'Dart:async';
+//import 'package:flutter_application_1/view/notificationView/mainscreen.dart';
+import 'notifications/notifications_service.dart';
 import 'view/list.dart';
 import 'view/form.dart';
 import 'view/checked.dart';
@@ -6,6 +11,18 @@ import 'view/groups.dart';
 import 'view/formGroup.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  NotificationService().initNotification();
+  tz.initializeTimeZones();
+  //Define o timer para o disparo das notificações
+  const oneMinute = const Duration(seconds: 30);
+  //nova instancia da class Timer
+  //receber o periodic para que possa disparar a funcao no tempo correto
+  //seta na variavel oneMinute
+  //em resumo a funçao deverá ser chamada a cada 1 minuto
+  new Timer.periodic(
+      oneMinute, (Timer t) => NotificationService().ReceiveItensNotification());
+  //NotificationService().ReceiveItensNotification();
   runApp(const MyApp());
 }
 
@@ -27,9 +44,11 @@ class MyApp extends StatelessWidget {
         // or simply save your changes to "hot reload" in a Flutter IDE).
         // Notice that the counter didn't reset back to zero; the application
         // is not restarted.
-        primarySwatch: Colors.deepPurple,
+        primarySwatch: Colors.indigo,
       ),
-      home: const MyHomePage(title: 'Lista de Tarefas'),
+      home: const MyHomePage(
+          title:
+              'Lista de Tarefas'), //Esta parte apenas foi ultilizada para chamar a tela de teste MainScreen(),
     );
   }
 }
@@ -53,6 +72,9 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  //aqui vou definir o metodo que inicializa o serviçõ de notifação
+  //
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -110,7 +132,7 @@ class _MyHomePageState extends State<MyHomePage> {
               //Cabeçalho do drawer
               DrawerHeader(
                 decoration: BoxDecoration(
-                  color: Colors.deepPurpleAccent,
+                  color: Colors.indigoAccent,
                 ),
                 child: const Text(
                   'Bem Vindo...',

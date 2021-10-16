@@ -121,7 +121,7 @@ class _FormTodoState extends State<FormTodo> {
                         hint: Text('Select Group'),
                         //value: selectedGroup,
                         icon: const Icon(Icons.arrow_downward),
-                        style: const TextStyle(color: Colors.deepPurple),
+                        style: const TextStyle(color: Colors.indigoAccent),
 
                         items: item.map((valueItem) {
                           return DropdownMenuItem(
@@ -135,23 +135,7 @@ class _FormTodoState extends State<FormTodo> {
                           });
                         },
                       ),
-                      /*
-          InputDatePickerFormField(
-              //context: context,
-              initialDate: DateTime.now(),
-              firstDate: DateTime(1950),
-              lastDate: DateTime(2050),
-              onDateSubmitted: (date) {
-                setState:
-                (() {
-                  _dateInit = date;
-                });
-              }),*/
-                      //datepicker
 
-                      /*Text(_dateInit == null
-              ? 'Nothing has been picked yet'
-              : _dateInit.toString()),*/
                       TextFormField(
                         decoration: InputDecoration(
                           border: UnderlineInputBorder(),

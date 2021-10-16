@@ -220,7 +220,7 @@ class _GridGroupsState extends State<GridGroups> {
                           },
                           child: Container(
                             decoration: BoxDecoration(
-                              color: Colors.deepPurpleAccent,
+                              color: Colors.indigoAccent,
                               borderRadius: BorderRadius.circular(10),
                             ),
                             padding: const EdgeInsets.all(2),

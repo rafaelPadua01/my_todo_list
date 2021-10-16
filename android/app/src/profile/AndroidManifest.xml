@@ -5,6 +5,23 @@
     -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <application android:requestLegacyExternalStorage="true"/>
+
+    <!-- Permissões de acesso a vibração. sounds e etc para as notificaoes-->
+    <uses-permission android:name="android.permission.RECEIVED_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <!-- Esta parte do código serve para que as notificações se mantenha
+            mesmo após o dispositivo ser reiniciado 
+            para que não seja necessário dar uma nova permissão de envio de notificações -->
+    <receiver
+        android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationReceiver" 
+    />
+    <receiver android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationBootReceiver">
+        <intent-filter>
+            <action android:name="android.intent.action.BOOT_COMPLETED"></action>
+        </intent-filter>
+
+    </receiver>
     
     <!-- <uses-permission android:name="android.permission.INTERNET"/> -->
 </manifest>

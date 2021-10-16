@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:flutter_application_1/model/todo_model.dart';
+import 'package:flutter_application_1/notifications/notifications_service.dart';
 
 class DatabaseHandler {
   //Inicia a conexão com o banco de dados
@@ -92,6 +93,30 @@ class DatabaseHandler {
     int count = await db.rawUpdate(
         'UPDATE todos SET checked = ? WHERE id = ?', [item.checked, item.id]);
     print('$item, $count');
+  }
+
+//Metodo que irá disparar as notificações agendadas
+  Future<void> sendNotification() async {
+    final db = await initializeDb();
+
+    //Mapa de resultados listados nos todos
+
+    final List<Map<String, dynamic>> maps = await db.query('todos');
+
+    for (var i = 0; i <= maps.length; i++) {
+      //Este if converte a hora armezanada como string
+      //o mesmo salva com o nome da função junta ao horario
+      //o que gera um erro na hora da verificação, sendo necessário esta conversão
+      if (TimeOfDay.fromDateTime(DateTime.parse(maps[i]['time'])) ==
+          DateTime.now()) {
+        print(maps[i]['id']);
+        final send = await NotificationService().showNotification(
+            maps[i]['id'], maps[i]['name'], maps[i].toString(), 0);
+      } else {
+        print('erro, verifique toda a linhas de codigo :/');
+      }
+      return;
+    }
   }
 
 //Remove um item da lista

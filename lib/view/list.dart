@@ -2,6 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/service/database_helper.dart';
 import 'package:flutter_application_1/model/todo_model.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:timezone/timezone.dart' as tz;
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:flutter_application_1/notifications/notifications_service.dart';
+import 'package:intl/intl.dart';
+import 'dart:convert';
 
 class ListTodo extends StatefulWidget {
   @override
@@ -23,10 +28,12 @@ class _ListTodoState extends State<ListTodo> {
   @override
   void initState() {
     super.initState();
+    tz.initializeTimeZones();
     handler = DatabaseHandler();
     handler.initializeDb().whenComplete(() async {
       setState(() {
         todos();
+        //ReceiveItensNotification();
       });
     });
   }
@@ -73,6 +80,18 @@ class _ListTodoState extends State<ListTodo> {
     return await this.handler.deleteTodo(id);
   }
 
+  //Metodo que recebe a lista de itens retornados e faz o envio das notificações
+  /*
+  @override
+  void _sendNotification(item) async {
+    final send = await NotificationService().showNotification(
+        item['id'],
+        'Alerta agendado.',
+        'Você agendou uma terefa ${item['description']}',
+        5);
+    return send;
+  }
+*/
   Widget build(BuildContext context) {
     return Scaffold(
       body: FutureBuilder(
@@ -100,7 +119,7 @@ class _ListTodoState extends State<ListTodo> {
                               content: Text(
                                   '${item.description} foi removido com sucesso...')));
                         },
-                        background: Container(color: Colors.deepPurpleAccent),
+                        background: Container(color: Colors.indigoAccent),
                         child: Card(
                           child: StatefulBuilder(builder:
                               (BuildContext context, StateSetter setState) {

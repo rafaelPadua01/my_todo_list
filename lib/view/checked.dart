@@ -20,32 +20,11 @@ class _ListCheckedState extends State<ListChecked> {
     this.handler = DatabaseHandler();
     this.handler_save = DatabaseHandlerSave();
     this.handler.initializeDb().whenComplete(() async {
-      setState(() {
-        // todos();
-      });
+      setState(() {});
     });
   }
 
-  //Metodo que recebe os todos e gera lista
-  /*
-  Future<List<Todo>> todos() async {
-    //conecta ao banco de dados e recebe as refencias do mesmo
-    final db = await this.handler.initializeDb();
-
-    final List<Map<String, dynamic>> maps = await db.query('todos');
-
-    return List.generate(maps.length, (i) {
-      return Todo(
-        id: maps[i]['id'],
-        description: maps[i]['description'],
-        checked: maps[i]['checked'],
-        date: maps[i]['date'],
-        time: maps[i]['time'],
-      );
-    });
-  }*/
-
-  //Metodo que salva os item que foram concluidos
+//Metodo que salva os item que foram concluidos
   //é necwessario clicar no botão save
   //ele enviara para o model
   // que fará todo o trabalho para nós
@@ -68,43 +47,7 @@ class _ListCheckedState extends State<ListChecked> {
       //return insert;
       // return insert;
     }
-    //print(items);
-    /*for (var i = 0; i < items.length; i++) {
-      var item = items[i];
-      print(item);
-      Save insertSave = Save(
-        fk_id_todo: item.id,
-        fk_description: item.description,
-        fk_checked: item.checked,
-        fk_date: item.date,
-        fk_time: item.time,
-        create_at: date_time.toString(),
-      );
-      //Cria a lista que recebera todos os todos
-      List<Save> listOfSave = [insertSave];
-      //print(item);
-//      result = 1;
-//      print(listOfSave);
 
-      return await this.handler_save.saveTodo(listOfSave);
-      // print(item.description);
-    }*/
-    //  List<Save> listOfSave = items;
-
-    // print(listOfSave);
-    /*Map<String, Object?> mapListOfSave = {
-      fk_id_todo: items.id,
-      fk_description: items.description,
-      fk_checked: items.checked,
-      fk_date: items.date,
-      fk_time: items.time,
-      create_at: date_time.toString(),
-    };
-    */
-    //return await this.handler_save.saveTodo(listOfSave);
-
-    // ScaffoldMessenger.of(context)
-    //    .showSnackBar(SnackBar(content: Text('Itens sendo salvos...')));
     return result;
   }
 
