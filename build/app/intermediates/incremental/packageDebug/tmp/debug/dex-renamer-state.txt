@@ -1,4 +1,4 @@
-#Sat Oct 16 01:36:24 UTC 2021
+#Sat Oct 16 15:43:09 UTC 2021
 base.0=/home/lubuntu/Área de Trabalho/teste/flutter_application_1/build/app/intermediates/dex/debug/mergeDexDebug/classes.dex
 path.0=classes.dex
 renamed.0=classes.dex

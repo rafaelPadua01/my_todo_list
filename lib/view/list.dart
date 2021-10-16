@@ -127,7 +127,7 @@ class _ListTodoState extends State<ListTodo> {
                               child: CheckboxListTile(
                                 title: Text(item.description),
                                 subtitle: Text(
-                                    item.date.toString() + "/" + item.time),
+                                    'Data : ' + item.date.substring(0, 10).toString() + "/" + 'Hora: ' + item.time.substring(10,  15)),
                                 activeColor: Colors.blue,
                                 checkColor: Colors.white,
                                 controlAffinity:
